@@ -358,7 +358,7 @@ def winner(strategy0, strategy1):
         return 1
 
 
-def average_win_rate(strategy, baseline=always_roll(0)):
+def average_win_rate(strategy, baseline=always_roll(6)):
     """Return the average win rate of STRATEGY against BASELINE. Averages the
     winrate when starting the game as player 0 and as player 1.
     """
@@ -370,21 +370,21 @@ def average_win_rate(strategy, baseline=always_roll(0)):
 
 def run_experiments():
     """Run a series of strategy experiments and report results."""
-    if True:  # Change to False when done finding max_scoring_num_rolls
+    if False:  # Change to False when done finding max_scoring_num_rolls
         six_sided_max = max_scoring_num_rolls(six_sided)
         print('Max scoring num rolls for six-sided dice:', six_sided_max)
 
     if False:  # Change to True to test always_roll(8)
         print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
 
-    if True:  # Change to True to test bacon_strategy
+    if False:  # Change to True to test bacon_strategy
         print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
 
-    if True:  # Change to True to test extra_turn_strategy
+    if False:  # Change to True to test extra_turn_strategy
         print('extra_turn_strategy win rate:', average_win_rate(extra_turn_strategy))
 
     if True:  # Change to True to test final_strategy
-        print('final_strategy win rate:', average_win_rate(final_strategy))
+        print('final_strategy win rate:', average_win_rate(final_strategy, always_roll(4)))
 
     "*** You may add additional experiments as you wish ***"
 
@@ -423,8 +423,9 @@ def final_strategy(score, opponent_score):
     1. If current score plus free_bacon score is higher than GOAL_SCORE, roll 0 dice.
     2. Try to force extra turns.
     3. Take fewer risk if score is almost achieve the GOAL_SCORE.
-    4. CUTOFF and NUM_ROLLS are 7 and 5 respectively when average win rate is highest
-    which is about 92%.
+    4. CUTOFF and NUM_ROLLS are 12 and 5 respectively when average win rate is highest
+    which is about 60% when versus to always_roll(6) and approximatey 70% when versus
+    to always_roll(4).
     """
     # BEGIN PROBLEM 12
     # return 6  # Replace this statement
@@ -437,7 +438,7 @@ def final_strategy(score, opponent_score):
         return 1
     elif score >= 88:
         return 2
-    return bacon_strategy(score, opponent_score, 7, 5)
+    return bacon_strategy(score, opponent_score, 11, 5)
     # END PROBLEM 12
 
 ##########################
