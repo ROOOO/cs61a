@@ -423,7 +423,7 @@ def final_strategy(score, opponent_score):
     1. If current score plus free_bacon score is higher than GOAL_SCORE, roll 0 dice.
     2. Try to force extra turns.
     3. Take fewer risk if score is almost achieve the GOAL_SCORE.
-    4. CUTOFF and NUM_ROLLS are 12 and 5 respectively when average win rate is highest
+    4. CUTOFF and NUM_ROLLS are 11 and 5 respectively when average win rate is highest
     which is about 60% when versus to always_roll(6) and approximatey 70% when versus
     to always_roll(4).
     """
