@@ -181,6 +181,17 @@ def report_progress(typed, prompt, user_id, send):
     """Send a report of your id and progress so far to the multiplayer server."""
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    len_typed = len(typed)
+    len_prompt = len(prompt)
+    count_correct = 0
+    for index in range(min(len_typed, len_prompt)):
+        if typed[index] == prompt[index]:
+            count_correct += 1
+        else:
+            break
+    progress = count_correct / len_prompt
+    send({'id': user_id, 'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -207,6 +218,13 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = []
+    for time in times_per_player:
+        time_per_player = []
+        for i in range(1, len(time)):
+            time_per_player.append(time[i] - time[i - 1])
+        times.append(time_per_player)
+    return game(words, times)
     # END PROBLEM 9
 
 
@@ -222,6 +240,19 @@ def fastest_words(game):
     word_indices = range(len(all_words(game)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    result = []
+    for _ in player_indices:
+        result.append([])
+    for word_index in word_indices:
+        fastest_time = -1
+        fastest_player = 0
+        for player_index in player_indices:
+            player_time = time(game, player_index, word_index)
+            if fastest_time < 0 or player_time < fastest_time:
+                fastest_time = player_time
+                fastest_player = player_index
+        result[fastest_player].append(word_at(game, word_index))
+    return result
     # END PROBLEM 10
 
 
@@ -261,7 +292,7 @@ def game_string(game):
     """A helper function that takes in a game object and returns a string representation of it"""
     return "game(%s, %s)" % (game[0], game[1])
 
-enable_multiplayer = False  # Change to True when you're ready to race.
+enable_multiplayer = True  # Change to True when you're ready to race.
 
 ##########################
 # Command Line Interface #
