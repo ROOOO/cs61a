@@ -17,6 +17,13 @@ def choose(paragraphs, select, k):
     """
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    if not paragraphs:
+        return ''
+    if select(paragraphs[0]):
+        k -= 1
+    if k < 0:
+        return paragraphs[0]
+    return choose(paragraphs[1:], select, k)
     cur = -1
     for i in range(len(paragraphs)):
         if select(paragraphs[i]):
