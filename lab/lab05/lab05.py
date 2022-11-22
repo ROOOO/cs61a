@@ -309,6 +309,23 @@ def add_trees(t1, t2):
     "*** YOUR CODE HERE ***"
     t1_branches = branches(t1)
     t2_branches = branches(t2)
+    result_label = label(t1) + label(t2)
+    # v1
+    def build_result_branches(bs1, bs2):
+        if not bs1:
+            return bs2
+        if not bs2:
+            return bs1
+        return [add_trees(bs1[0], bs2[0])] + build_result_branches(bs1[1:], bs2[1:])
+    result_branches = build_result_branches(t1_branches, t2_branches)
+    return tree(result_label, result_branches)
+    # v2
+    result_branches = [add_trees(b1, b2) for b1, b2 in zip(t1_branches, t2_branches)]
+    i = len(result_branches)
+    result_branches += t1_branches[i:]
+    result_branches += t2_branches[i:]
+    return tree(result_label, result_branches)
+    # v3
     len_t1_branches = len(t1_branches)
     len_t2_branches = len(t2_branches)
     if len_t1_branches > len_t2_branches:
