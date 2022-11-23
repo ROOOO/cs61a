@@ -23,8 +23,8 @@ def square_tree(t):
     ...                      [tree(3),
     ...                       tree(4)]),
     ...                 tree(5,
-    ...                      [tree(6),
-    ...                            [tree(7)]],
+    ...                      [tree(6,
+    ...                            [tree(7)]),
     ...                       tree(8)])])
     >>> print_tree(square_tree(numbers))
     1
