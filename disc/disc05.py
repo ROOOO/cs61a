@@ -5,6 +5,10 @@ def height(t):
     >>> height(t)
     2
     """
+    assert is_tree(t)
+    if is_leaf(t):
+        return 0
+    return max([1 + height(b) for b in branches(t)])
 
 
 def max_path_sum(t):
@@ -14,6 +18,10 @@ def max_path_sum(t):
     >>> max_path_sum(t)
     11
     """
+    assert is_tree(t)
+    if is_leaf(t):
+        return label(t)
+    return label(t) + max([max_path_sum(b) for b in branches(t)])
 
 
 def square_tree(t):
@@ -36,38 +44,51 @@ def square_tree(t):
           49
         64
     """
+    assert is_tree(t)
+    if is_leaf(t):
+        return tree(label(t) ** 2)
+    return tree(label(t) ** 2, [square_tree(b) for b in branches(t)])
 
 
-def find_path(tree, x):
+def find_path(t, x):
     """
     >>> t = tree(2, [tree(7, [tree(3), tree(6, [tree(5), tree(11)])]), tree(15)])
     >>> find_path(t, 5)
     [2, 7, 6, 5]
     >>> find_path(t, 10) # returns None
     """
-    if ___:
-        return ___
-    ___:
-        path = ___
-        if ___:
-            return ___
+    if label(t) == x:
+        return [label(t)]
+    for b in branches(t):
+        path = find_path(b, x)
+        if path:
+            return [label(t)] + path
 
 
 def prune_binary(t, nums):
-    if ___:
-        if ___:
+    """
+    >>> t = tree('1', [tree('0', [tree('0'), tree('1')]), tree('1', [tree('0')])])
+    >>> print_tree(prune_binary(t, ['01', '110', '100']))
+    1
+      0
+        0
+      1
+        0
+    """
+    if is_leaf(t):
+        if label(t) in nums:
             return t
         return None
     else:
-        next_valid_nums = ___
+        next_valid_nums = [num[1:] for num in nums if num[0] == label(t)]
         new_branches = []
-        for ___:
-            pruned_branch = prune_binary(___, next_valid_nums)
+        for b in branches(t):
+            pruned_branch = prune_binary(b, next_valid_nums)
             if pruned_branch is not None:
-                new_branches = new_branches + [___]
+                new_branches = new_branches + [pruned_branch]
         if not new_branches:
             return None
-        return ___
+        return tree(label(t), new_branches)
 
 
 # Tree ADT
