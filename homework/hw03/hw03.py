@@ -278,7 +278,7 @@ def mul_interval(x, y):
     p2 = lower_bound(x) * upper_bound(y)
     p3 = upper_bound(x) * lower_bound(y)
     p4 = upper_bound(x) * upper_bound(y)
-    return [min(p1, p2, p3, p4), max(p1, p2, p3, p4)]
+    return interval(min(p1, p2, p3, p4), max(p1, p2, p3, p4))
 
 
 def sub_interval(x, y):
@@ -321,10 +321,10 @@ def check_par():
 
 
 def multiple_references_explanation():
-    return """Eva was right. Because add_interval first and then divides another interval
-        which makes it smaller (tighter). For common the sense, if the intervals are both (1, 2), 
-        the parallel result should be (0.5, 1.0) which is the same as the result of par2,
-        instead of (0.25, 2.0) which is the result of par1."""
+    return """Eva was right. Because mul_interval may return a bad value if
+        the inputs are the same. For instance, if a interval A were [-1, 1],
+        mul_interval(A, A) would be [-1, 1] which makes no sense. It should
+        be [0, 1] that break the rule of mul_interval."""
 
 
 def quadratic(x, a, b, c):
