@@ -20,6 +20,16 @@ def make_bank(balance):
     """
     def bank(message, amount):
         "*** YOUR CODE HERE ***"
+        nonlocal balance
+        if message == 'deposit':
+            balance += amount
+        elif message == 'withdraw':
+            if balance < amount:
+                return 'Insufficient funds'
+            balance -= amount
+        else:
+            return 'Invalid message'
+        return balance
     return bank
 
 
@@ -52,6 +62,16 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+    bank = make_bank(balance)
+    error_passwords = []
+    def helper(amount, pwd):
+        if len(error_passwords) == 3:
+            return 'Frozen account. Attempts: ' + str(error_passwords)
+        if pwd == password:
+            return bank('withdraw', amount)
+        error_passwords.append(pwd)
+        return 'Incorrect password'
+    return helper
 
 
 def repeated(t, k):
@@ -76,6 +96,17 @@ def repeated(t, k):
     """
     assert k > 1
     "*** YOUR CODE HERE ***"
+    count = 1
+    num = next(t)
+    while True:
+        next_num = next(t)
+        if next_num == num:
+            count += 1
+            if count == k:
+                return num
+        else:
+            num = next_num
+            count = 1
 
 
 def permutations(seq):
@@ -101,6 +132,12 @@ def permutations(seq):
     [['a', 'b'], ['b', 'a']]
     """
     "*** YOUR CODE HERE ***"
+    if not seq:
+        yield []
+    else:
+        for elem in permutations(seq[1:]):
+            for i in range(len(seq)):
+                yield elem[:i] + [seq[0]] + elem[i:]
 
 
 def make_joint(withdraw, old_pass, new_pass):
