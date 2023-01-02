@@ -161,8 +161,11 @@ class TutorCard(Card):
         True
         """
         "*** YOUR CODE HERE ***"
+        for _ in range(3):
+            opponent.play(0)
+            opponent.draw()
         #Uncomment the line below when you've finished implementing this method!
-        #print('{} discarded and re-drew 3 cards!'.format(opponent.name))
+        print('{} discarded and re-drew 3 cards!'.format(opponent.name))
 
     def copy(self):
         """
@@ -187,6 +190,9 @@ class TACard(Card):
         300
         """
         "*** YOUR CODE HERE ***"
+        tmp = other_card.defense
+        other_card.defense = other_card.attack
+        other_card.attack = tmp
 
     def copy(self):
         """
@@ -217,10 +223,15 @@ class ProfessorCard(Card):
         """
         orig_opponent_deck_length = len(opponent.deck.cards)
         "*** YOUR CODE HERE ***"
+        player_deck_length = len(player.deck.cards)
+        for i in range(min(orig_opponent_deck_length, player_deck_length)):
+            player.deck.cards[i].attack += opponent.deck.cards[i].attack
+            player.deck.cards[i].defense += opponent.deck.cards[i].defense
+        opponent.deck.cards = []
         discarded = orig_opponent_deck_length - len(opponent.deck.cards)
         if discarded:
             #Uncomment the line below when you've finished implementing this method!
-            #print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
+            print('{} cards were discarded from {}\'s deck!'.format(discarded, opponent.name))
             return
 
     def copy(self):
