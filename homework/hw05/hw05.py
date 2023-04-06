@@ -36,6 +36,37 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, product, price):
+        self.product = product
+        self.price = price
+        self.stock = 0
+        self.balance = 0
+
+    def vend(self):
+        if self.stock == 0:
+            print("'Inventory empty. Restocking required.'")
+            return
+        if self.balance < self.price:
+            print("'You must add ${} more funds.'".format(self.price - self.balance))
+            return
+        self.balance -= self.price
+        if self.balance == 0:
+            print("'Here is your {}.'".format(self.product))
+        else:
+            print("'Here is your {} and ${} change.'".format(self.product, self.balance))
+        self.balance = 0
+        self.stock -= 1
+
+    def add_funds(self, funds):
+        if self.stock == 0:
+            print("'Inventory empty. Restocking required. Here is your ${}.'".format(funds))
+        else:
+            self.balance += funds
+            print("'Current balance: ${}'".format(self.balance))
+
+    def restock(self, num):
+        self.stock += num
+        print("'Current {} stock: {}'".format(self.product, self.stock))
 
 
 class Mint:
@@ -74,9 +105,11 @@ class Mint:
 
     def create(self, kind):
         "*** YOUR CODE HERE ***"
+        return kind(self.year)
 
     def update(self):
         "*** YOUR CODE HERE ***"
+        self.year = Mint.current_year
 
 class Coin:
     def __init__(self, year):
@@ -84,6 +117,7 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
+        return self.cents + max(0, Mint.current_year - self.year - 50)
 
 class Nickel(Coin):
     cents = 5
@@ -108,6 +142,12 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    def helper(n, link = Link.empty):
+        n, x = n // 10, n % 10
+        if n == 0:
+            return Link(x, link)
+        return helper(n, Link(x, link))
+    return helper(n)
 
 
 def is_bst(t):
@@ -136,6 +176,24 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
+    if len(t.branches) > 2:
+        return False
+    if t.is_leaf():
+        return True
+    if len(t.branches) == 1:
+        return is_bst(t.branches[0])
+    def bst_min(t):
+        if t.is_leaf():
+            return t.label
+        return min(t.label, bst_min(t.branches[0]))
+    def bst_max(t):
+        if t.is_leaf():
+            return t.label
+        return max(t.label, bst_max(t.branches[-1]))
+    left, right = t.branches
+    if bst_max(left) <= t.label < bst_min(right):
+        return is_bst(left) and is_bst(right)
+    return False
 
 
 def preorder(t):
@@ -149,6 +207,12 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
+    result = []
+    def helper(t):
+        result.append(t.label)
+        [helper(b) for b in t.branches]
+    helper(t)
+    return result
 
 
 def path_yielder(t, value):
@@ -187,9 +251,11 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
+    if t.label == value:
+        yield [value]
+    for b in t.branches:
+        for path in path_yielder(b, value):
+            yield [t.label] + path
 
             "*** YOUR CODE HERE ***"
 
