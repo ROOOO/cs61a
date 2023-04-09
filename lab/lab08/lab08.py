@@ -15,11 +15,9 @@ def convert_link(link):
         link = link.rest
     return result
     # recursive
-    def helper(link):
-        if link is Link.empty:
-            return []
-        return [link.first] + helper(link.rest)
-    return helper(link)
+    if link is Link.empty:
+        return []
+    return [link.first] + convert_link(link.rest)
 
 
 def every_other(s):
