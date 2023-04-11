@@ -22,12 +22,18 @@ class B():
 def q1():
     """
     >>> A("one")
+    one
     >>> print(A("one"))
+    oneone
     >>> repr(A("two"))
+    'two'
     >>> b = B()
+    boo!
     >>> b.add_a(A("a"))
     >>> b.add_a(A("b"))
     >>> b
+    2
+    aabb
     """
     pass
 
@@ -38,7 +44,9 @@ def sum_nums(lnk):
     >>> sum_nums(a)
     14
     """
-    ...
+    if lnk is Link.empty:
+        return 0
+    return lnk.first + sum_nums(lnk.rest)
 
 
 def multiply_lnks(lst_of_lnks):
@@ -55,13 +63,13 @@ def multiply_lnks(lst_of_lnks):
     True
     """
     # Note: you might not need all lines in this skeleton code
-    ___________________ = ___________
-    for _______________________________________:
-        if __________________________________________:
-            _________________________________
-        _________________________________
-    ________________________________________________________
-    ________________________________________________________
+    product = 1
+    for lnk in lst_of_lnks:
+        if lnk is Link.empty:
+            return Link.empty
+        product *= lnk.first
+    lst_of_lnks_rests = [lnk.rest for lnk in lst_of_lnks]
+    return Link(product, multiply_lnks(lst_of_lnks_rests))
 
 
 def flip_two(lnk):
@@ -75,7 +83,10 @@ def flip_two(lnk):
     >>> lnk
     Link(2, Link(1, Link(4, Link(3, Link(5)))))
     """
-    ...
+    if lnk is Link.empty or lnk.rest is Link.empty:
+        return
+    lnk.first, lnk.rest.first = lnk.rest.first, lnk.first
+    return flip_two(lnk.rest.rest)
 
 
 def filter_link(link, f):
@@ -85,14 +96,16 @@ def filter_link(link, f):
     >>> next(g)
     2
     >>> next(g)
+    Traceback (most recent call last):
+     ...
     StopIteration
     >>> list(filter_link(link, lambda x: x % 2 != 0))
     [1, 3]
     """
-    while _________________________:
-        if ________________________:
-        _______________________
-        ___________________________
+    while link is not Link.empty:
+        if f(link.first):
+            yield link.first
+        link = link.rest
 
 
 def make_even(t):
@@ -101,15 +114,20 @@ def make_even(t):
     >>> make_even(t)
     >>> t.label
     2
+    >>> t.branches[0].label
+    2
     >>> t.branches[0].branches[0].label
     4
     """
-    ...
+    if t.label % 2 == 1:
+        t.label += 1
+    [make_even(b) for b in t.branches]
 
 
 def square_tree(t):
     """Mutates a Tree t by squaring all its elements."""
-    ...
+    t.label **= 2
+    [square_tree(b) for b in t.branches]
 
 
 def find_paths(t, entry):
@@ -121,25 +139,27 @@ def find_paths(t, entry):
     []
     """
     paths = []
-    if _____________________________:
-        ______________________________________________
-    for __________________________________:
-        _________________________________________:
-            ___________________________________________
-    return _______________________
+    if t.label == entry:
+        return [[entry]]
+    for b in t.branches:
+        for path in find_paths(b, entry):
+            paths.append([t.label] + path)
+    return paths
 
 
 def combine_tree(t1, t2, combiner):
     """
     >>> a = Tree(1, [Tree(2, [Tree(3)])])
     >>> b = Tree(4, [Tree(5, [Tree(6)])])
+    >>> from operator import mul
     >>> combined = combine_tree(a, b, mul)
     >>> combined.label
     4
     >>> combined.branches[0].label
     10
     """
-    ...
+    combined = [combine_tree(b1, b2, combiner) for b1, b2 in zip(t1.branches, t2.branches)]
+    return Tree(combiner(t1.label, t2.label), combined)
 
 
 def alt_tree_map(t, map_fn):
@@ -149,7 +169,12 @@ def alt_tree_map(t, map_fn):
     >>> alt_tree_map(t, negate)
     Tree(-1, [Tree(2, [Tree(-3)]), Tree(4)])
     """
-    ...
+    def helper(t, alt = False):
+        if alt:
+            t.label = map_fn(t.label)
+        [helper(b, not alt) for b in t.branches]
+        return t
+    return helper(t, True)
 
 
 class Link:
@@ -186,3 +211,9 @@ class Tree:
         self.branches = branches
     def is_leaf(self):
         return not self.branches
+    def __repr__(self):
+        if self.branches:
+            branch_str = ', ' + repr(self.branches)
+        else:
+            branch_str = ''
+        return 'Tree({0}{1})'.format(self.label, branch_str)
