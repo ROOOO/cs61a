@@ -107,6 +107,10 @@ class Name(Expr):
         None
         """
         "*** YOUR CODE HERE ***"
+        try:
+            return env[self.var_name]
+        except KeyError as e:
+            print('operator is undefined {}'.format(self.var_name))
 
     def __str__(self):
         return self.var_name
@@ -173,6 +177,9 @@ class CallExpr(Expr):
         Number(14)
         """
         "*** YOUR CODE HERE ***"
+        if not self.operator.eval(env):
+            return None
+        return self.operator.eval(env).apply(list(map(lambda x: x.eval(env), self.operands)))
 
     def __str__(self):
         function = str(self.operator)
@@ -282,6 +289,9 @@ class LambdaFunction(Value):
             raise TypeError("Oof! Cannot apply number {} to arguments {}".format(
                 comma_separated(self.parameters), comma_separated(arguments)))
         "*** YOUR CODE HERE ***"
+        new_env = self.parent.copy()
+        new_env.update(dict(zip(self.parameters, arguments)))
+        return self.body.eval(new_env)
 
     def __str__(self):
         definition = LambdaExpr(self.parameters, self.body)
