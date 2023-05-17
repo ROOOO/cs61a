@@ -14,6 +14,9 @@
 (define (enumerate s)
   ; BEGIN PROBLEM 15
   'replace-this-line
+  (define (helper i l)
+    (if (null? l) '() (cons (list i (car l)) (helper (+ i 1) (cdr l)))))
+  (helper 0 s)
   )
   ; END PROBLEM 15
 
@@ -24,7 +27,11 @@
 (define (merge comp list1 list2)
   ; BEGIN PROBLEM 16
   'replace-this-line
-  )
+  (cond ((null? list1) list2)
+        ((null? list2) list1)
+        (else (if (comp (car list1) (car list2))
+          (cons (car list1) (merge comp (cdr list1) list2))
+          (cons (car list2) (merge comp list1 (cdr list2)))))))
   ; END PROBLEM 16
 
 
@@ -38,6 +45,12 @@
 (define (nondecreaselist s)
     ; BEGIN PROBLEM 17
     'replace-this-line
+    (if (null? s)
+        nil
+        (let ((rest (nondecreaselist (cdr s))))
+          (if (or (null? (cdr s)) (> (car s) (cadr s)))
+              (cons (list (car s)) rest)
+              (cons (cons (car s) (car rest)) (cdr rest)))))
     )
     ; END PROBLEM 17
 
