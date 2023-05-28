@@ -18,6 +18,17 @@ def prune_min(t):
     Tree(6, [Tree(3, [Tree(1)])])
     """
     "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        return
+    if len(t.branches) == 2:
+        if t.branches[0].label < t.branches[1].label:
+            t.branches = [t.branches[0]]
+            prune_min(t.branches[0])
+        else:
+            t.branches = [t.branches[1]]
+            prune_min(t.branches[1])
+    else:
+        prune_min(t.branches[0])
 
 
 def num_splits(s, d):
@@ -34,6 +45,12 @@ def num_splits(s, d):
     12
     """
     "*** YOUR CODE HERE ***"
+    def helper(s, n):
+        if not s:
+            return 1 if abs(n) <= d else 0
+        first, rest = s[0], s[1:]
+        return helper(rest, n + first) + helper(rest, n - first)
+    return helper(s, 0) // 2
 
 
 class Account(object):
