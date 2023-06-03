@@ -10,14 +10,14 @@ def paths(x, y):
     >>> paths(3, 3) # No calls is a valid path
     [[3]]
     """
-    if ___:
-        return ___
-    elif ___:
-        return ___
+    if x == y:
+        return [[x]]
+    elif x > y:
+        return []
     else:
-        a = ___
-        b = ___
-        return ___
+        a = paths(x + 1, y)
+        b = paths(x * 2, y)
+        return [[x] + p for p in a + b]
 
 
 def merge(s1, s2):
@@ -32,7 +32,10 @@ def merge(s1, s2):
         return [s2[0]] + merge(s1, s2[1:])
 
 def mergesort(seq):
-    pass
+    l = len(seq)
+    if l <= 1:
+        return seq
+    return merge(mergesort(seq[:l//2]), mergesort(seq[l//2:]))
 
 
 def long_paths(tree, n):
@@ -51,11 +54,18 @@ def long_paths(tree, n):
     <0 1 3 4>
     <0 1 3 5>
     <0 6 7 8>
+    <0 6 9>
     <0 11 12 13 14>
     >>> long_paths(whole, 4)
     [Link(0, Link(11, Link(12, Link(13, Link(14)))))]
     """
-
+    if n <= 0 and tree.is_leaf():
+        return [Link(tree.label)]
+    paths = []
+    for b in tree.branches:
+        for path in long_paths(b, n - 1):
+            paths.append(Link(tree.label, path))
+    return paths
 
 
 def widest_level(t):
@@ -69,48 +79,59 @@ def widest_level(t):
     """
     levels = []
     x = [t]
-    while ___:
-        ___
-        ___ = sum(___, [])
-    return max(levels, key=___)
+    while x:
+        levels.append([t.label for t in x])
+        x = sum([t.branches for t in x], [])
+    return max(levels, key=len)
 
 
 def bake(banana, bread):
-    ___(___(___)) # This line is Multiple Choice
+    banana.append(bread.append(1)) # This line is Multiple Choice
+    banana.extend([bread.extend([1])]) # This line is Multiple Choice
     # Select all correct answers for the blank above
     # A. banana.append(bread.append(1))
     # B. bread.append(banana.append(1))
     # C. banana.extend([bread.extend([1])])
     # D. bread.extend([banana.extend([1])])
-    bread += banana[:(len(___) - ___)]
-    banana.___(bread[___[___]])
-    return ___, ___
+    bread += banana[:(len(banana) - 1)]
+    banana.append(bread[bread[1]])
+    return banana, bread
 
 
 def amon(g):
-    ___
+    n = 0
     def u(s):
-        ___
-        f = lambda x: x + g.___ + n
-        ___
+        nonlocal n
+        f = lambda x: x + g.pop(len(g) - 1) + n
+        n += 1
         return f(s)
     return u
 
 
-class Emotion(___):
+class Emotion(object):
+    num = 0
     def __init__(self):
-        pass
+        self.power = 5
+        Emotion.num += 1
 
     def feeling(self, other):
-        pass
+        if self.power == other.power:
+            print('Together')
+        elif self.power > other.power:
+            self.catchphrase()
+            other.catchphrase()
+        else:
+            other.catchphrase()
+            self.catchphrase()
 
-class Joy(___):
-    def catchphrase(self):
-        pass
 
-class Sadness(___):
+class Joy(Emotion):
     def catchphrase(self):
-        pass
+        print('Think positive thoughts')
+
+class Sadness(Emotion):
+    def catchphrase(self):
+        print('I\'m positive you will get lost')
 
 
 def remove_duplicates(lnk):
@@ -120,6 +141,13 @@ def remove_duplicates(lnk):
     >>> lnk
     Link(1, Link(5))
     """
+    if lnk is Link.empty or lnk.rest is Link.empty:
+        return
+    if lnk.rest.first == lnk.first:
+        lnk.rest = lnk.rest.rest
+        remove_duplicates(lnk)
+    else:
+        remove_duplicates(lnk.rest)
 
 
 def repeated(f):
@@ -138,10 +166,10 @@ def repeated(f):
     ...  zip(range(5), repeated(lambda x: 2 * x))]
     [1, 2, 4, 8, 16]
     """
-    g = ___
+    g = lambda x: x
     while True:
-        ___
-        ___
+        yield g
+        g = (lambda g: lambda x: f(g(x)))(g)
 
 
 from operator import add, mul
@@ -153,11 +181,11 @@ def accumulate(iterable, f):
     [1, 2, 6, 24, 120]
     """
     it = iter(iterable)
-    ___
-    ___
-    for ___:
-        ___
-        ___
+    total = next(it)
+    yield total
+    for x in it:
+        total = f(total, x)
+        yield total
 
 
 class Tree:
